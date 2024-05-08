@@ -1,166 +1,166 @@
-import java.awt.BorderLayout;
-import java.awt.FlowLayout;
-import java.awt.LayoutManager;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.Container;
+import java.awt.Dimension;
 import java.util.ArrayList;
 import java.util.List;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
+import javax.swing.BoxLayout;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
-import javax.swing.JComboBox;
-import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
-import javax.swing.JPanel;
+import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
 import javax.swing.JTextField;
-import javax.swing.ListSelectionModel;
-import javax.swing.event.AncestorEvent;
-import javax.swing.event.AncestorListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
-public class FerrecorApp extends JFrame implements AncestorListener, ActionListener {
-    private java.awt.Container contenedor;
-    private JTextField campoNombre, campoDescribcion, campoPrecio, campoCantidad;
-    private JButton botonAgregar,botonEliminar,botonActualizar, botonEstadistica;
-    private JList<String> listaDeProductos;
-    private DefaultListModel<String> modeloLista;
-    private JComboBox<String> comboHerramientas;
-    private JLabel etiquetacantidad, etiquetaPrecio, etiquetaDescripcion, etiquetaNombre,etiqutaMterial, etiqutaEjemplos, etiquetaHerramientas;
-    private JTextField campoMaterial, campoEjemplo, campoHerramienta;
-    private List<producto>productos;
-
-    public FerrecorApp(){
-        setTitle("Ferrecor");
-        contenedor = getContentPane();
-        contenedor.setLayout(new BorderLayout());
-
-        JPanel panelSuperior = new JPanel();
-        panelSuperior.setLayout(new FlowLayout());
-        etiquetaNombre =new JLabel("nombre: ");
-        campoNombre = new JTextField(20);
-        panelSuperior.add(etiquetaNombre);
-        panelSuperior.add(campoNombre);
-        etiquetaDescripcion =new JLabel("Descripcion: ");
-        campoDescribcion =new JTextField(20);
-        panelSuperior.add(etiquetaDescripcion);
-        panelSuperior.add(campoDescribcion);
-        etiquetaPrecio = new JLabel("Precio: ");
-        campoPrecio = new JTextField(10);
-        panelSuperior.add(etiquetaPrecio);
-        panelSuperior.add(campoPrecio);
-        etiquetacantidad =new JLabel("Cantidad:");
-        campoCantidad =new JTextField(10);
-        panelSuperior.add(etiquetacantidad);
-        panelSuperior.add(campoCantidad);
-
-        botonAgregar = new JButton("Agregar");
-        panelSuperior.add(botonAgregar);
-        contenedor.add(panelSuperior, BorderLayout.NORTH);
 
 
-        JPanel panelCentral =new JPanel();
-        panelCentral.setLayout(new BorderLayout());
-        modeloLista = new DefaultListModel<>();
-        listaDeProductos = new JList<>(modeloLista);
-        listaDeProductos.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        listaDeProductos.addListSelectionListener(new ListSelectionListener() {
+public class FerrecorApp extends JFrame implements ActionListener, ListSelectionListener {
+    private JLabel productoLabel, descripcionLabel, precioLabel, cantidadLabel, ejemploUsoLabel, herramientasLabel;
+    private JTextField Campoproducto, Campodescripcion, Campoprecio,Campocantidad, campoejemploUso, Campoherramientas;
+    private JButton Agregarboton;
+    private JList<String> listadoproducto;
+    private String ultimoProducto;
+    private DefaultListModel<String> listModel;
+    private List<Producto> ListaProducto;
 
-            @Override
-            public void valueChanged(ListSelectionEvent e) {
-                int indice = listaDeProductos.getSelectedIndex();
-                if(indice !=-1){
-                    producto producto = productos.get(indice);
-                    campoMaterial.setText(producto.getMaterialElaboracion());
-                    campoEjemplo.setText(producto.getEjemploUso());
-                    campoHerramienta.setText(producto.getHerramientaNecesaria());
 
-                }
-            }
-            
-        });
-
-        panelCentral.add(new JScrollPane(listaDeProductos), BorderLayout.CENTER);
-        contenedor.add(panelCentral, BorderLayout.CENTER);
-
-        JPanel panelInferiro = new JPanel();
-        panelInferiro.setLayout(new FlowLayout());
-        botonEliminar =new JButton("Eliminar");
-        botonEliminar.addActionListener(this);
-        panelInferiro.add(botonEliminar);
-
-        botonActualizar = new JButton("Actualizar");
-        botonActualizar.addActionListener(this);
-        panelInferiro.add(botonActualizar);
-
-        botonEstadistica = new JButton("estadistica");
-        botonActualizar.addActionListener(this);
-        panelInferiro.add(botonEstadistica);
-
-        contenedor.add(panelInferiro, BorderLayout.SOUTH);
-
-        JDialog VentanEemergente= new JDialog(this, "detalles del producto");
-        VentanEemergente.setLayout(new FlowLayout());
-        etiqutaMterial = new JLabel("Material:");
-        campoMaterial =new JTextField(20);
-        VentanEemergente.add(etiqutaMterial);
-        VentanEemergente.add(campoMaterial);
-        etiqutaEjemplos =new JLabel("Ejemplo de uso: ");
-        campoEjemplo =new JTextField(10);
-        VentanEemergente.add(etiqutaEjemplos);
-        etiquetaHerramientas =new JLabel("herramienta necesaria: ");
-        campoHerramienta =new JTextField(20);
-        VentanEemergente.add(etiquetaHerramientas);
-        VentanEemergente.add(campoHerramienta);
-        VentanEemergente.pack();
-        VentanEemergente.setVisible(false);
-
-        productos =new ArrayList<>();
-
+    public FerrecorApp() {
         
+        setTitle("Ferrecor");
+        setSize(500, 500);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(500, 300);
+        setLocationRelativeTo(null);
+        
+        // Panel principal
+        Container container = getContentPane();
+        container.setLayout(new BoxLayout(container, BoxLayout.PAGE_AXIS));
+        
+        // Etiquetas y campos de entrada
+        productoLabel = new JLabel("Nombre del producto:");
+        Campoproducto = new JTextField(10);
+        
+        descripcionLabel = new JLabel("Descripción:");
+        Campodescripcion = new JTextField(20);
+        
+        precioLabel = new JLabel("Precio:");
+        Campoprecio = new JTextField(10);
+        
+        cantidadLabel = new JLabel("Cantidad:");
+        Campocantidad = new JTextField(5);
+        
+        ejemploUsoLabel = new JLabel("Ejemplo de uso:");
+        campoejemploUso = new JTextField(20);
+        
+        herramientasLabel = new JLabel("Herramientas para su uso:");
+        Campoherramientas = new JTextField(20);
+        
+        Agregarboton = new JButton("Agregar");
+        Agregarboton.addActionListener(this);
+
+        listModel =new DefaultListModel<>();
+        listadoproducto = new JList<>(listModel);
+        listadoproducto.addListSelectionListener(this);
+
+        JScrollPane scrollPane =new JScrollPane(listadoproducto);
+        scrollPane.setPreferredSize(new Dimension(450, 200));
+        
+        // Añadir componentes al panel
+        container.add(productoLabel);
+        container.add(Campoproducto);
+        container.add(descripcionLabel);
+        container.add(Campodescripcion);
+        container.add(precioLabel);
+        container.add(Campoprecio);
+        container.add(cantidadLabel);
+        container.add(Campocantidad); 
+        container.add(ejemploUsoLabel);
+        container.add(campoejemploUso);
+        container.add(herramientasLabel);
+        container.add(Campoherramientas);
+        container.add(Agregarboton);
+        container.add(scrollPane);
+
+        ListaProducto =new ArrayList<>();
+    
         setVisible(true);
     }
-
-    public static void main(String[] args) throws Exception {
-        FerrecorApp ferrecorApp= new FerrecorApp();
-        System.out.println("Hello, World!");
+    
+    public static void main(String[] args) {
+        
+        new FerrecorApp();
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        if(e.getSource()== botonAgregar){
-            String nombre = campoNombre.getText();
-            String descripcion = campoDescribcion.getText();
-            double precio =Double.parseDouble(campoPrecio.getText());
-            int cantidad = Integer.parseInt(campoCantidad.getText());
+        if(e.getSource()==Agregarboton){
+            AgregarProducto();
+            mostrarProducto();
+        }
+    }
 
-            producto producto = new producto(nombre, descripcion, precio, cantidad);
-            productos.add(producto);
-            modeloLista.addElement(producto.getNombre());
+    private void AgregarProducto(){
+        String nombre = Campoproducto.getText();
+        String descripcion =Campodescripcion.getText();
+        double precio = Double.parseDouble(Campoprecio.getText());
+        int cantidad = Integer.parseInt(Campocantidad.getText());
+        String herramientas = Campoherramientas.getText();
+        String ejemploUso = campoejemploUso.getText();
+
+        Producto producto = new Producto(nombre, descripcion, precio, cantidad, descripcion, ejemploUso, herramientas);
+        ListaProducto.add(producto);
+
+    }
+    private void mostrarProducto(){
+        listModel.removeAllElements();
+        
+        for(Producto p : ListaProducto){
+            listModel.addElement(p.getNombreDelproduco()
+                /* "Descripcion: "+p.getDescripcionDelProducto()+"\n"+
+                "Precio: "+p.getPrecioDelProducto()+"\n"+
+                "cantidad: "+p.getCantidad()+"\n"+
+                "Ejemplo de uso: "+p.getEjemploDeUso()+"\n"+
+                "Herramientas para uso: "+p.getHerramientaParaUsar()+"\n"*/);
+        }
+    }
+    private void MostraraDetalleProducto(){
+        System.out.println("mostrra detalles...");
+        String selectedProducto =listadoproducto.getSelectedValue();
+        System.out.println("producto seleccionado" +selectedProducto);
+
+        if(selectedProducto != null){
+            for(Producto producto : ListaProducto){
+
+                if(producto.getNombreDelproduco().equals(selectedProducto.trim())){
+                    JOptionPane.showMessageDialog(this, 
+                        "Nombre: "+producto.getNombreDelproduco()+"\n"+
+                        "Descripcion: "+producto.getDescripcionDelProducto()+"\n"+
+                        "Precio: "+producto.getPrecioDelProducto()+"\n"+
+                        "Cantidad: "+producto.getCantidad()+"\n"+
+                        "Material de elaboracion: "+producto.getMaterialDelProducto()+"\n"+
+                        "Ejemplo de uso: "+producto.getEjemploDeUso()+"\n"+
+                        "Herramientas para su uso: "+producto.getHerramientaParaUsar()+"\n",
+                    "detalles delproducto", JOptionPane.INFORMATION_MESSAGE);
+       
+                }
+            }
         }
     }
 
     @Override
-    public void ancestorAdded(AncestorEvent event) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'ancestorAdded'");
-    }
+    public void valueChanged(ListSelectionEvent e) {
+        if(!e.getValueIsAdjusting()){
+            String selectedProducto = listadoproducto.getSelectedValue();
+            if(selectedProducto != null &&!selectedProducto.equals(ultimoProducto)){
+                MostraraDetalleProducto();
+                ultimoProducto = selectedProducto;
+            }
 
-    @Override
-    public void ancestorRemoved(AncestorEvent event) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'ancestorRemoved'");
+        }
     }
-
-    @Override
-    public void ancestorMoved(AncestorEvent event) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'ancestorMoved'");
-    }
-    
 }
