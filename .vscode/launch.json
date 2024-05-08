@@ -6,6 +6,13 @@
     "configurations": [
         {
             "type": "java",
+            "name": "FerrecorApp",
+            "request": "launch",
+            "mainClass": "FerrecorApp",
+            "projectName": "proyecto2ferreteria_af323c73"
+        },
+        {
+            "type": "java",
             "name": "Current File",
             "request": "launch",
             "mainClass": "${file}"

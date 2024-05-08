@@ -23,7 +23,7 @@ import javax.swing.event.ListSelectionListener;
 public class FerrecorApp extends JFrame implements ActionListener, ListSelectionListener {
     private JLabel productoLabel, descripcionLabel, precioLabel, cantidadLabel, ejemploUsoLabel, herramientasLabel;
     private JTextField Campoproducto, Campodescripcion, Campoprecio,Campocantidad, campoejemploUso, Campoherramientas;
-    private JButton Agregarboton;
+    private JButton Agregarboton, borrarBoton;
     private JList<String> listadoproducto;
     private String ultimoProducto;
     private DefaultListModel<String> listModel;
@@ -63,6 +63,9 @@ public class FerrecorApp extends JFrame implements ActionListener, ListSelection
         Agregarboton = new JButton("Agregar");
         Agregarboton.addActionListener(this);
 
+        borrarBoton = new JButton("Borrar producto");
+        borrarBoton.addActionListener(this);
+
         listModel =new DefaultListModel<>();
         listadoproducto = new JList<>(listModel);
         listadoproducto.addListSelectionListener(this);
@@ -84,6 +87,7 @@ public class FerrecorApp extends JFrame implements ActionListener, ListSelection
         container.add(herramientasLabel);
         container.add(Campoherramientas);
         container.add(Agregarboton);
+        container.add(borrarBoton);
         container.add(scrollPane);
 
         ListaProducto =new ArrayList<>();
@@ -101,6 +105,8 @@ public class FerrecorApp extends JFrame implements ActionListener, ListSelection
         if(e.getSource()==Agregarboton){
             AgregarProducto();
             mostrarProducto();
+        }else if(e.getSource()== borrarBoton){
+            borrarProducto();
         }
     }
 
@@ -126,6 +132,21 @@ public class FerrecorApp extends JFrame implements ActionListener, ListSelection
                 "cantidad: "+p.getCantidad()+"\n"+
                 "Ejemplo de uso: "+p.getEjemploDeUso()+"\n"+
                 "Herramientas para uso: "+p.getHerramientaParaUsar()+"\n"*/);
+        }
+    }
+    private void borrarProducto(){
+        String nombreAborrar = JOptionPane.showInputDialog(this, "Ingrese el nombre del producto a borrar: ");
+        
+        if(nombreAborrar != null && !nombreAborrar.isEmpty()){
+            for(Producto producto : ListaProducto){
+
+                if(producto.getNombreDelproduco().equals(nombreAborrar.trim())){
+                    ListaProducto.remove(producto);
+                    mostrarProducto();
+                    return;
+                }
+            }
+            JOptionPane.showMessageDialog(this,"no se encontro el producto con ese nombre", "producto encontrado", JOptionPane.ERROR_MESSAGE);
         }
     }
     private void MostraraDetalleProducto(){
