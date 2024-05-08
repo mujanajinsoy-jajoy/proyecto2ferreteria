@@ -23,7 +23,7 @@ import javax.swing.event.ListSelectionListener;
 public class FerrecorApp extends JFrame implements ActionListener, ListSelectionListener {
     private JLabel productoLabel, descripcionLabel, precioLabel, cantidadLabel, ejemploUsoLabel, herramientasLabel;
     private JTextField Campoproducto, Campodescripcion, Campoprecio,Campocantidad, campoejemploUso, Campoherramientas;
-    private JButton Agregarboton, borrarBoton;
+    private JButton Agregarboton, borrarBoton,venderBoton, recibirSuminstro;
     private JList<String> listadoproducto;
     private String ultimoProducto;
     private DefaultListModel<String> listModel;
@@ -66,6 +66,12 @@ public class FerrecorApp extends JFrame implements ActionListener, ListSelection
         borrarBoton = new JButton("Borrar producto");
         borrarBoton.addActionListener(this);
 
+        venderBoton = new JButton("vender producto");
+        venderBoton.addActionListener(this);
+
+        recibirSuminstro = new JButton("Recibir suministro");
+        recibirSuminstro.addActionListener(this);
+
         listModel =new DefaultListModel<>();
         listadoproducto = new JList<>(listModel);
         listadoproducto.addListSelectionListener(this);
@@ -88,6 +94,8 @@ public class FerrecorApp extends JFrame implements ActionListener, ListSelection
         container.add(Campoherramientas);
         container.add(Agregarboton);
         container.add(borrarBoton);
+        container.add(venderBoton);
+        container.add(recibirSuminstro);
         container.add(scrollPane);
 
         ListaProducto =new ArrayList<>();
@@ -107,6 +115,10 @@ public class FerrecorApp extends JFrame implements ActionListener, ListSelection
             mostrarProducto();
         }else if(e.getSource()== borrarBoton){
             borrarProducto();
+        }else if(e.getSource()== venderBoton){
+            venderProducto();
+        }else if(e.getSource()== recibirSuminstro){
+            RecibirSuminstro();
         }
     }
 
@@ -147,6 +159,44 @@ public class FerrecorApp extends JFrame implements ActionListener, ListSelection
                 }
             }
             JOptionPane.showMessageDialog(this,"no se encontro el producto con ese nombre", "producto encontrado", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+    private void venderProducto(){
+        String nombreAvender = JOptionPane.showInputDialog(this, "ingrese nombre del producto a vender: ");
+        if(nombreAvender !=null && !nombreAvender.isEmpty()){
+            for(Producto producto :ListaProducto){
+                if(producto.getNombreDelproduco().equals(nombreAvender.trim())){
+                   int cantidadaVender = Integer.parseInt(JOptionPane.showInputDialog(this,"ingrese la cantidad a vender: "));
+                    if (cantidadaVender >0 && cantidadaVender<= producto.getCantidad()){
+                        producto.setCantidad(producto.getCantidad()-cantidadaVender);
+                        mostrarProducto();
+                        return;
+                    }else{
+                        JOptionPane.showMessageDialog(this,"la cantidad ingresada es ivalido o supera ek stock disponible","cantidad invalida",JOptionPane.ERROR_MESSAGE);
+                        return;
+                    }
+                }
+            }
+            JOptionPane.showConfirmDialog(this, "no se encontro el producto con ese nombre", "producto no encongtrado", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+    private void RecibirSuminstro(){
+        String NommbreArecibir = JOptionPane.showInputDialog(this, "nombre de producto a recibir sumistro: ");
+        if(NommbreArecibir !=null && !NommbreArecibir.isEmpty()){
+            for(Producto producto: ListaProducto){
+                if(producto.getNombreDelproduco().equals(NommbreArecibir.trim())){
+                    int cantidadArecibir = Integer.parseInt(JOptionPane.showInputDialog(this,"ingrese la cantidad a recibir: "));
+                    if(cantidadArecibir >0){
+                        producto.setCantidad(producto.getCantidad()+cantidadArecibir);
+                        mostrarProducto();
+                        return;
+                    }else{
+                        JOptionPane.showMessageDialog(this,"la cantidad a ingresar no es valida","cantidad invalida",JOptionPane.ERROR_MESSAGE);
+                        return;
+                    }
+                }
+            }
+            JOptionPane.showMessageDialog(this, "No se encontró ningún producto con ese nombre.", "Producto no encontrado", JOptionPane.ERROR_MESSAGE);
         }
     }
     private void MostraraDetalleProducto(){
